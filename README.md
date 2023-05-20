@@ -18,7 +18,7 @@ Este manual proporciona una descripción y guía de uso para el código de Trash
 3. Ejecuta el siguiente comando para ejecutar el programa:
 
 ```shell
-python nombre_del_archivo.py
+python parcial_2.py
 ```
 
 ## Descripción del código
