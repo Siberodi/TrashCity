@@ -1,0 +1,79 @@
+import unittest
+from io import StringIO
+from unittest.mock import patch
+
+from parcial_2 import TrashCity, EstadoRutaActiva, EstadoRutaFinalizada, ruta, Camion, turno
+
+class TestEstadoRuta(unittest.TestCase):
+    def test_tonResiduos_activa(self):
+        trash_city = TrashCity("1")
+        test_ruta = ruta("latitud", "longitud", "dia")
+        test_ruta.local_geografica("latitud", "longitud")
+        test_ruta.set_estado(EstadoRutaActiva())
+
+        # Simular entrada del usuario
+        input_values = ["1", "1.5", "2.0", "2"]
+
+        with patch("builtins.input", side_effect=input_values):
+            with patch("sys.stdout", new=StringIO()) as output:
+                test_ruta.tonResiduos(trash_city)
+
+        expected_output = "Se añadió la cantidad correctamente\n\n"
+        self.assertEqual(output.getvalue(), expected_output)
+
+    def test_tonResiduos_finalizada(self):
+        trash_city = TrashCity("1")
+        test_ruta = ruta("latitud", "longitud", "dia")
+        test_ruta.local_geografica("latitud", "longitud")
+        test_ruta.set_estado(EstadoRutaFinalizada())
+
+        # Simular entrada del usuario
+        input_values = ["1", "1.5"]
+
+        with patch("builtins.input", side_effect=input_values):
+            with patch("sys.stdout", new=StringIO()) as output:
+                test_ruta.tonResiduos(trash_city)
+
+        expected_output = "No se pueden añadir más residuos a una ruta finalizada.\n"
+        self.assertEqual(output.getvalue(), expected_output)
+
+    def test_finalizar_ruta_activa(self):
+        test_ruta = ruta("latitud", "longitud", "dia")
+        test_ruta.set_estado(EstadoRutaActiva())
+
+        # Simular entrada del usuario
+        input_values = ["2", "1.5"]
+
+        with patch("builtins.input", side_effect=input_values):
+            with patch("sys.stdout", new=StringIO()) as output:
+                test_ruta.finalizar_ruta()
+
+        expected_output = "Se ha finalizado la ruta en un tiempo de 1.5\n\n"
+        self.assertEqual(output.getvalue(), expected_output)
+
+    def test_finalizar_ruta_finalizada(self):
+        test_ruta = ruta("latitud", "longitud", "dia")
+        test_ruta.set_estado(EstadoRutaFinalizada())
+
+        # Simular entrada del usuario
+        input_values = ["2", "1.5"]
+
+        with patch("builtins.input", side_effect=input_values):
+            with patch("sys.stdout", new=StringIO()) as output:
+                test_ruta.finalizar_ruta()
+
+        expected_output = "La ruta ya ha sido finalizada.\n"
+        self.assertEqual(output.getvalue(), expected_output)
+
+class TestTurno(unittest.TestCase):
+    def test_calcularTonVidrio(self):
+        test_ruta = ruta("latitud", "longitud", "dia")
+        test_ruta.TONvidrio = [1.5, 2.0, 0.5]
+        test_turno = turno(test_ruta)
+
+        result = test_turno.calcularTonVidrio(test_ruta)
+        self.assertEqual(result, 4.0)
+
+    def test_calcularTonPapel(self):
+        test_ruta = ruta("latitud", "longitud", "dia")
+        test_ruta.TONpapel
